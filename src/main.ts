@@ -1,25 +1,24 @@
-// src/main.ts
-import { google } from "@ai-sdk/google";
+import "dotenv/config";
 import { generateText } from "ai";
-import { systemPrompt } from "./prompts";  // ✅ match the export name
+import { createOpenAI } from "@ai-sdk/openai";
+import { systemPrompt, greetingPrompt, helpPrompt } from "./prompts";
 
-async function runJarvis() {
-  // Example user input (later replace with CLI or voice input)
-  const userMessage = "Tell me a joke about robots";
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,  
+  baseURL: "https://api.openai.com/v1",
+});
 
-  // Generate a response using Google Gemini
-  const result = await generateText({
-    model: google("gemini-1.5-flash"),
-    system: systemPrompt, // ✅ fixed variable name
-    messages: [
-      {
-        role: "user",
-        content: userMessage,
-      },
-    ],
+async function run() {
+  console.log(greetingPrompt);
+
+  const response = await generateText({
+    model: openai("gpt-4o-mini"),
+    system: systemPrompt,
+    prompt: helpPrompt,
   });
 
-  console.log("🤖 Mini-Jarvis:", result.text);
+  console.log("🤖 Mini-Jarvis Response:");
+  console.log(response.text);
 }
 
-runJarvis().catch(console.error);
+run().catch(console.error);
