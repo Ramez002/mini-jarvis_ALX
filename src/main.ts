@@ -1,16 +1,25 @@
-import { generateText } from "ai";
+// src/main.ts
 import { google } from "@ai-sdk/google";
-import { SYSTEM_PROMPT } from "./prompts.js";
+import { generateText } from "ai";
+import { SYSTEM_PROMPT } from "./prompts";
 
-const runAgent = async () => {
-  const codeReview = await generateText({
+async function runJarvis() {
+  // Example user input (later you can replace this with voice or CLI input)
+  const userMessage = "Tell me a joke about robots";
+
+  // Generate a response using Google Gemini
+  const result = await generateText({
     model: google("gemini-1.5-flash"),
     system: SYSTEM_PROMPT,
     messages: [
-      { role: "user", content: "Hello Mini-Jarvis! Tell me a joke." },
+      {
+        role: "user",
+        content: userMessage,
+      },
     ],
   });
-  console.log(codeReview.text);
-};
 
-await runAgent();
+  console.log("🤖 Mini-Jarvis:", result.text);
+}
+
+runJarvis().catch(console.error);
